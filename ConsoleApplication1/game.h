@@ -19,19 +19,26 @@ struct data {//type that represents what snake see
 	float body[8];
 };
 
+struct vector {
+	int x;
+	int y;
+};
+
 class game
 {
 private:
-	
+	vector food;
 	int points;
 
+	//priv func
 
 public:
 	game();
 	~game();
 	data GetData();
 	void Play(Direction);
-
+	//geting func
+	int GetPoints() { return points; }
 };
 
 #endif

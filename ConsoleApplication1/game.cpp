@@ -11,5 +11,19 @@ game::~game()
 {
 }
 
+data game::GetData()
+{
+
+
+
+	return data();
+}
+
+void game::Play(Direction)
+{
+}
+
+
+
 
 
