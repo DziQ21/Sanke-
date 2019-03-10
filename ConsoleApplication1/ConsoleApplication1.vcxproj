@@ -151,10 +151,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Brain.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Brain.cpp" />
     <ClCompile Include="ConsoleApplication1.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="pch.cpp">

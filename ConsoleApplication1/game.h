@@ -1,6 +1,6 @@
 #ifndef GAME
 #define GAME
-
+#include <vector>
 //
 //		  @ @ @
 //		   @@@
@@ -27,9 +27,11 @@ struct vector {
 class game
 {
 private:
-	vector food;
-	int points;
-
+	vector Food;
+	int Points;
+	std::vector <vector> Body;
+	int HeadPosition;
+	vector GhostTail;
 	//priv func
 
 public:
@@ -37,8 +39,9 @@ public:
 	~game();
 	data GetData();
 	void Play(Direction);
+	void Display();
 	//geting func
-	int GetPoints() { return points; }
+	int GetPoints() { return Points; }
 };
 
 #endif

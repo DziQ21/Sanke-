@@ -23,6 +23,10 @@ void game::Play(Direction)
 {
 }
 
+void game::Display()
+{
+}
+
 
 
 
