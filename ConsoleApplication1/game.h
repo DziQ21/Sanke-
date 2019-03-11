@@ -10,7 +10,7 @@
 
 #pragma once
 #define WIDTH 20
-#define HIGHT 20
+#define HEIGHT 20
 
 enum Direction{up ,right ,down,left};//to make job easier
 struct data {//type that represents what snake see
