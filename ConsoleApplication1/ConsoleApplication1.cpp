@@ -3,14 +3,18 @@
 
 #include "pch.h"
 #include <iostream>
+#include <string>
 #include "game.h"
-
+#include <cstdlib>
+#include <ctime>
 
 
 int main()
 {
+	srand(time(NULL));
 	game giereczka;
-	giereczka.Display();
+	while (true)
+	std::cout<<giereczka.Display();
 }
 
 // Uruchomienie programu: Ctrl + F5 lub menu Debugowanie > Uruchom bez debugowania

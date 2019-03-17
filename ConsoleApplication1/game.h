@@ -9,7 +9,7 @@
 //		  @ X @
 
 #pragma once
-#define WIDTH 20
+#define WIDTH 40
 #define HEIGHT 20
 
 enum Direction{up ,right ,down,left};//to make job easier
@@ -32,14 +32,17 @@ private:
 	std::vector <vector> Body;
 	int HeadPosition;
 	vector GhostTail;
-	//priv func
+	Direction SnakeDirection;
+	bool CzyOdpalone;//to fix ;
 
+	//priv func
+	void SetFood();
 public:
 	game();
 	~game();
 	data GetData();
-	void Play(Direction);
-	void Display();
+	void Play(Direction input);
+	std::string Display();
 	//geting func
 	int GetPoints() { return Points; }
 };
