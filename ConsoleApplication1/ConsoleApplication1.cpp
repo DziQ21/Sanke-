@@ -13,8 +13,13 @@ int main()
 {
 	srand(time(NULL));
 	game giereczka;
-	while (true)
-	std::cout<<giereczka.Display();
+	while (true) {
+		int a;
+		std::cin>> a;
+		giereczka.Play(a);
+		std::cout << giereczka.Display();
+		
+	}
 }
 
 // Uruchomienie programu: Ctrl + F5 lub menu Debugowanie > Uruchom bez debugowania
