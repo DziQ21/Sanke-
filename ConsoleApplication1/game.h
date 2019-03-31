@@ -12,9 +12,9 @@
 #define WIDTH 40
 #define HEIGHT 20
 
-enum Direction{up ,right ,down,left};//to make job easier
+enum Direction{up=0 ,right ,down,left};//to make job easier
 struct data {//type that represents what snake see
-	float wall[8];
+	float wall[4];
 	float food[8];
 	float body[8];
 };
@@ -40,6 +40,7 @@ private:
 public:
 	game();
 	~game();
+	void Play(int input);
 	data GetData();
 	void Play(Direction input);
 	std::string Display();

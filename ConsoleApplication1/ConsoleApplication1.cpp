@@ -7,7 +7,7 @@
 #include "game.h"
 #include <cstdlib>
 #include <ctime>
-
+#include <Windows.h>
 
 int main()
 {
@@ -16,8 +16,10 @@ int main()
 	while (true) {
 		int a;
 		std::cin>> a;
+		
+		system("CLS");
 		giereczka.Play(a);
-		std::cout << giereczka.Display();
+		std::cout << giereczka.Display() << std::endl << giereczka.GetData().wall[0]<<" "<< giereczka.GetData().wall[2] <<std::endl<< giereczka.GetData().wall[1] << " " << giereczka.GetData().wall[3];
 		
 	}
 }

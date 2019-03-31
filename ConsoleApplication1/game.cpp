@@ -43,6 +43,8 @@ game::game()
 	Body.push_back(bufor);
 	HeadPosition = 0;
 	SetFood();
+	CzyOdpalone = 1;
+	SnakeDirection = right;
 }
 
 
@@ -50,12 +52,126 @@ game::~game()
 {
 }
 
-data game::GetData()
+void game::Play(int input)
 {
 
+	if (!CzyOdpalone)
+	{
+
+		return;
+	}
+	int real;
+
+	if ((input == 0 || input == 2) && (SnakeDirection == 0 || SnakeDirection == 2))
+		real = static_cast<Direction>(SnakeDirection);
+	else
+		if ((input == 3 || input == 1) && (SnakeDirection == 1 || SnakeDirection == 3))
+			real =static_cast<Direction>(SnakeDirection);
+		else
+			real = input;
+
+	if (HeadPosition != Body.size() - 1)
+		GhostTail = Body[HeadPosition + 1];
+	else
+		GhostTail = Body[0];
+	switch (real) {
+		//ghost tail setting 
 
 
-	return data();
+	case 1:
+		SnakeDirection = right;
+		if (HeadPosition != Body.size() - 1)
+		{
+			Body[HeadPosition + 1].x = Body[HeadPosition].x + 1;
+			Body[HeadPosition + 1].y = Body[HeadPosition].y;
+			HeadPosition++;
+		}
+		else
+		{
+			Body[0].x = Body[HeadPosition].x + 1;
+			Body[0].y = Body[HeadPosition].y;
+			HeadPosition = 0;
+		}
+		break;
+	case 3:
+		SnakeDirection = left;
+		if (HeadPosition != Body.size() - 1)
+		{
+			Body[HeadPosition + 1].x = Body[HeadPosition].x - 1;
+			Body[HeadPosition + 1].y = Body[HeadPosition].y;
+			HeadPosition++;
+		}
+		else
+		{
+			Body[0].x = Body[HeadPosition].x - 1;
+			Body[0].y = Body[HeadPosition].y;
+			HeadPosition = 0;
+		}
+		break;
+	case 2:
+		SnakeDirection = down;
+		if (HeadPosition != Body.size() - 1)
+		{
+			Body[HeadPosition + 1].y = Body[HeadPosition].y +1;
+			Body[HeadPosition + 1].x = Body[HeadPosition].x;
+			HeadPosition++;
+		}
+		else
+		{
+			Body[0].y = Body[HeadPosition].y +1;
+			Body[0].x = Body[HeadPosition].x;
+			HeadPosition = 0;
+		}
+		break;
+	case 0:
+		SnakeDirection = up;
+		if (HeadPosition != Body.size() - 1)
+		{
+			Body[HeadPosition + 1].y = Body[HeadPosition].y - 1;
+			Body[HeadPosition + 1].x = Body[HeadPosition].x;
+			HeadPosition++;
+		}
+		else
+		{
+			Body[0].y = Body[HeadPosition].y - 1;
+			Body[0].x = Body[HeadPosition].x;
+			HeadPosition = 0;
+		}
+		break;
+
+	};
+	//colision
+	//food
+	if (Body[HeadPosition] == Food)
+	{
+		Body.insert(Body.begin() + HeadPosition + 1, GhostTail);//co jak na ostatniej
+		SetFood();
+	}
+
+
+}
+
+data game::GetData()
+{
+	char screen[HEIGHT][WIDTH];
+	for (int i = 0; i < HEIGHT; i++)
+		for (int j = 0; j < WIDTH; j++)
+			screen[i][j] = ' ';
+
+	for (int i = 0; i < Body.size(); i++)
+		screen[Body[i].y][Body[i].x] = 'X';
+
+	screen[Food.y][Food.x] = '@';
+	screen[Body[HeadPosition].y][Body[HeadPosition].x] = 'O';
+	data result;
+	result.wall[0]= (float)Body[HeadPosition].y/HEIGHT;
+	result.wall[1] = (float)Body[HeadPosition].x / WIDTH;
+	result.wall[2] = (float)(HEIGHT - Body[HeadPosition].y) / HEIGHT;
+	result.wall[3] = (float)(WIDTH - Body[HeadPosition].x) / WIDTH;
+
+
+
+	return result;
 }
 
 void game::Play(Direction input)
@@ -73,7 +189,7 @@ void game::Play(Direction input)
 			real = SnakeDirection;
 		else
 			real = input;
-	real++;//conversion
+	
 
 	switch (real) {
 		//ghost tail setting 
