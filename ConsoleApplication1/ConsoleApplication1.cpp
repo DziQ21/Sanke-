@@ -19,8 +19,7 @@ int main()
 		
 		system("CLS");
 		giereczka.Play(a);
-		std::cout << giereczka.Display() << std::endl << giereczka.GetData().wall[0]<<" "<< giereczka.GetData().wall[2] <<std::endl<< giereczka.GetData().wall[1] << " " << giereczka.GetData().wall[3];
-		
+		std::cout << giereczka.Display();
 	}
 }
 

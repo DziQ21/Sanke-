@@ -46,6 +46,7 @@ public:
 	std::string Display();
 	//geting func
 	int GetPoints() { return Points; }
+	bool GetRuning() { return CzyOdpalone; }
 };
 
 #endif

@@ -54,7 +54,6 @@ game::~game()
 
 void game::Play(int input)
 {
-
 	if (!CzyOdpalone)
 	{
 
@@ -141,7 +140,12 @@ void game::Play(int input)
 
 	};
 	//colision
-	//food
+	if (Body[HeadPosition].x < 0 || Body[HeadPosition].y < 0 || Body[HeadPosition].x > WIDTH-1 || Body[HeadPosition].y > HEIGHT-1)
+		CzyOdpalone = 0;
+	for (int i = 0; i < Body.size(); i++)
+		if (Body[HeadPosition].x == Body[i].x&&Body[HeadPosition].y == Body[i].y&&i != HeadPosition)
+			CzyOdpalone = 0;
+		//food
 	if (Body[HeadPosition] == Food)
 	{
 		Body.insert(Body.begin() + HeadPosition + 1, GhostTail);//co jak na ostatniej
@@ -153,22 +157,226 @@ void game::Play(int input)
 
 data game::GetData()
 {
-	char screen[HEIGHT][WIDTH];
-	for (int i = 0; i < HEIGHT; i++)
-		for (int j = 0; j < WIDTH; j++)
-			screen[i][j] = ' ';
-
-	for (int i = 0; i < Body.size(); i++)
-		screen[Body[i].y][Body[i].x] = 'X';
-
-	screen[Food.y][Food.x] = '@';
-	screen[Body[HeadPosition].y][Body[HeadPosition].x] = 'O';
 	data result;
-	result.wall[0]= (float)Body[HeadPosition].y/HEIGHT;
-	result.wall[1] = (float)Body[HeadPosition].x / WIDTH;
-	result.wall[2] = (float)(HEIGHT - Body[HeadPosition].y) / HEIGHT;
-	result.wall[3] = (float)(WIDTH - Body[HeadPosition].x) / WIDTH;
+	for (int i = 0; i < 8; i++)
+	{
+		result.food[i] = 0;
+		result.body[i] = 0;
+	}
 
+	if(CzyOdpalone)
+	{
+		char screen[WIDTH][HEIGHT];
+		for (int i = 0; i < HEIGHT; i++)
+			for (int j = 0; j < WIDTH; j++)
+				screen[i][j] = ' ';
+
+		for (int i = 0; i < Body.size(); i++)
+			screen[Body[i].x][Body[i].y] = 'X';
+
+		screen[Food.y][Food.x] = '@';
+		screen[Body[HeadPosition].y][Body[HeadPosition].x] = 'O';
+		result.wall[0] = (float)Body[HeadPosition].y / HEIGHT;
+		result.wall[1] = (float)Body[HeadPosition].x / WIDTH;
+		result.wall[2] = (float)(HEIGHT - Body[HeadPosition].y) / HEIGHT;
+		result.wall[3] = (float)(WIDTH - Body[HeadPosition].x) / WIDTH;
+		//body
+		for (int i = 1; i <= 10; i++)
+		{
+			if (Body[HeadPosition].y + i > HEIGHT - 1)
+			{
+				break;
+			}
+			if (screen[Body[HeadPosition].x][Body[HeadPosition].y+i]=='X')
+			{
+				result.body[0] = float(11 - i) / 10;
+				break;
+			}	
+		}
+		for (int i = 1; i <= 10; i++)
+		{
+			if ((Body[HeadPosition].y + i > HEIGHT - 1)|| (Body[HeadPosition].x + i > WIDTH - 1))
+			{
+				break;
+			}
+			if (screen[Body[HeadPosition].x+i][Body[HeadPosition].y + i] == 'X')
+			{
+				result.body[1] = float(11 - i) / 10;
+				break;
+			}
+		}
+		for (int i = 1; i <= 10; i++)
+		{
+			if (Body[HeadPosition].x + i > WIDTH - 1)
+			{
+				break;
+			}
+			if (screen[Body[HeadPosition].x+i][Body[HeadPosition].y] == 'X')
+			{
+				result.body[2] = float(11 - i) / 10;
+				break;
+			}
+		}
+		for (int i = 1; i <= 10; i++)
+		{
+			if ((Body[HeadPosition].x + i > WIDTH - 1)|| (Body[HeadPosition].y - i < 0))
+			{
+				break;
+			}
+			if (screen[Body[HeadPosition].x + i][Body[HeadPosition].y-i] == 'X')
+			{
+				result.body[3] = float(11 - i) / 10;
+				break;
+			}
+		}
+		for (int i = 1; i <= 10; i++)
+		{
+			if (Body[HeadPosition].y - i < 0)
+			{
+				break;
+			}
+			if (screen[Body[HeadPosition].x][Body[HeadPosition].y - i] == 'X')
+			{
+				result.body[4] = float(11 - i) / 10;
+				break;
+			}
+		}
+		for (int i = 1; i <= 10; i++)
+		{
+			if ((Body[HeadPosition].y - i < 0)||(Body[HeadPosition].x - i < 0))
+			{
+				break;
+			}
+			if (screen[Body[HeadPosition].x-i][Body[HeadPosition].y - i] == 'X')
+			{
+				result.body[5] = float(11 - i) / 10;
+				break;
+			}
+		}
+		for (int i = 1; i <= 10; i++)
+		{
+			if (Body[HeadPosition].x - i < 0)
+			{
+				break;
+			}
+			if (screen[Body[HeadPosition].x-i][Body[HeadPosition].y] == 'X')
+			{
+				result.body[6] = float(11 - i) / 10;
+				break;
+			}
+		}
+		for (int i = 1; i <= 10; i++)
+		{
+			if ((Body[HeadPosition].y + i > HEIGHT - 1)||(Body[HeadPosition].x - i < 0))
+			{
+				break;
+			}
+			if (screen[Body[HeadPosition].x-1][Body[HeadPosition].y + i] == 'X')
+			{
+				result.body[7] = float(11 - i) / 10;
+				break;
+			}
+		}
+		//food 
+		for (int i = 1; i <= 15; i++)
+		{
+			if (Body[HeadPosition].y + i > HEIGHT - 1)
+			{
+				break;
+			}
+			if (screen[Body[HeadPosition].x][Body[HeadPosition].y + i] == '@')
+			{
+				result.food[0] = float(16 - i) / 15;
+				break;
+			}
+		}
+		for (int i = 1; i <= 15; i++)
+		{
+			if ((Body[HeadPosition].y + i > HEIGHT - 1) || (Body[HeadPosition].x + i > WIDTH - 1))
+			{
+				break;
+			}
+			if (screen[Body[HeadPosition].x + i][Body[HeadPosition].y + i] == '@')
+			{
+				result.food[1] = float(16 - i) / 15;
+				break;
+			}
+		}
+		for (int i = 1; i <= 15; i++)
+		{
+			if (Body[HeadPosition].x + i > WIDTH - 1)
+			{
+				break;
+			}
+			if (screen[Body[HeadPosition].x + i][Body[HeadPosition].y] == '@')
+			{
+				result.food[2] = float(16 - i) / 15;
+				break;
+			}
+		}
+		for (int i = 1; i <= 15; i++)
+		{
+			if ((Body[HeadPosition].x + i > WIDTH - 1) || (Body[HeadPosition].y - i < 0))
+			{
+				break;
+			}
+			if (screen[Body[HeadPosition].x + i][Body[HeadPosition].y - i] == '@')
+			{
+				result.food[3] = float(16 - i) / 15;
+				break;
+			}
+		}
+		for (int i = 1; i <= 15; i++)
+		{
+			if (Body[HeadPosition].y - i < 0)
+			{
+				break;
+			}
+			if (screen[Body[HeadPosition].x][Body[HeadPosition].y - i] == '@')
+			{
+				result.food[4] = float(16 - i) / 15;
+				break;
+			}
+		}
+		for (int i = 1; i <= 15; i++)
+		{
+			if ((Body[HeadPosition].y - i < 0) || (Body[HeadPosition].x - i < 0))
+			{
+				break;
+			}
+			if (screen[Body[HeadPosition].x - i][Body[HeadPosition].y - i] == '@')
+			{
+				result.food[5] = float(16 - i) / 16;
+				break;
+			}
+		}
+		for (int i = 1; i <= 15; i++)
+		{
+			if (Body[HeadPosition].x - i < 0)
+			{
+				break;
+			}
+			if (screen[Body[HeadPosition].x - i][Body[HeadPosition].y] == '@')
+			{
+				result.food[6] = float(16 - i) / 15;
+				break;
+			}
+		}
+		for (int i = 1; i <= 15; i++)
+		{
+			if ((Body[HeadPosition].y + i > HEIGHT - 1) || (Body[HeadPosition].x - i < 0))
+			{
+				break;
+			}
+			if (screen[Body[HeadPosition].x - 1][Body[HeadPosition].y + i] == '@')
+			{
+				result.food[7] = float(16 - i) / 15;
+				break;
+			}
+		}
+
+
+	}
 
 
 	return result;
@@ -258,6 +466,12 @@ void game::Play(Direction input)
 
 	};
 	//colision
+
+	if (Body[HeadPosition].x < 0 || Body[HeadPosition].y < 0 || Body[HeadPosition].x >= WIDTH || Body[HeadPosition].y > HEIGHT)
+		CzyOdpalone = 0;
+	for (int i = 0; i < Body.size(); i++)
+		if (Body[HeadPosition].x == Body[i].x&&Body[HeadPosition].y == Body[i].y&&i != HeadPosition)
+			CzyOdpalone = 0;
 	//food
 	if (Body[HeadPosition] == Food)
 	{
@@ -276,10 +490,16 @@ std::string game::Display()
 			screen[i][j] = ' ';
 
 	for (int i = 0; i < Body.size(); i++)
-		screen[Body[i].y][Body[i].x]='X';
+	{
+		if(i!=HeadPosition)
+		screen[Body[i].y][Body[i].x] = 'X';
 
+	}
 	screen[Food.y][Food.x] = '@';
-	screen[Body[HeadPosition].y][Body[HeadPosition].x] = 'O';
+	if(CzyOdpalone)
+		screen[Body[HeadPosition].y][Body[HeadPosition].x] = 'O';
+	
+
 
 	std::string bufer;
 	for (int i = 0; i < WIDTH + 2; i++)

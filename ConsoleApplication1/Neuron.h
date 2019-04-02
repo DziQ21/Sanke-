@@ -1,22 +1,19 @@
+#pragma once
 #ifndef NEURON
 #define NEURON
+#define RANGE 20;
+
 #include <vector>
-
-struct Valued_Neuron
+class neuron
 {
+	std::vector <float> ratio;
+	float basevalue;
 	float value;
-	Neuron orginal;
-};
-
-class Neuron
-{
 public:
-	Neuron();
-	~Neuron();
-	std::vector <Valued_Neuron*> Before;
-	int num_of_before_neurons;
-
-private:
-
+	neuron(int a);
+	void mutate(int procent);
+	neuron();
+	~neuron();
 };
+
 #endif // !NEURON
