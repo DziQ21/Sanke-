@@ -12,7 +12,7 @@
 #include <Windows.h>
 #include <algorithm>
 
-#define MUTATIONTATIO 10
+#define MUTATIONTATIO 15
 #define SIZEOFPOPULATION 100
 
 int main()
@@ -60,6 +60,7 @@ int main()
 		}
 		for (int i = 50; i < SIZEOFPOPULATION; i++)
 		{
+			population[i] = population[99 - i];
 			population[i].evolve(MUTATIONTATIO);
 		}
 		for (int i = 0; i < SIZEOFPOPULATION; i++)

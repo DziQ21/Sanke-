@@ -35,7 +35,7 @@ private:
 	vector GhostTail;
 	Direction SnakeDirection;
 	bool CzyOdpalone;//to fix ;
-
+	int pointforlife;
 	//priv func
 	void SetFood();
 public:

@@ -8,15 +8,11 @@
 #include <ctime>
 #include <cmath>
 
-neuron::neuron()
-{
+//neuron::neuron()
+//{
 	
-	basevalue = (float)(rand() % (10 * 10) /*RANGE*/) / 10;
-	for (int i = 0; i < ratio.size(); i++)
-	{
-			ratio[i] = (float)(rand() % (10 * 10) /*RANGE*/) / 10;
-	}
-}
+
+//}
 float neuron::getvalue(std::vector<float> values)
 {
 	float argument=basevalue;
@@ -30,7 +26,11 @@ float neuron::getvalue(std::vector<float> values)
 neuron::neuron(int a)
 {
 	ratio.resize(a);
-
+	basevalue = (float)(rand() % (20 * 10) /*RANGE*/) / 10-10;
+	for (int i = 0; i < ratio.size(); i++)
+	{
+		ratio[i] = (float)(rand() % (20 * 10) /*RANGE*/) / 10 -10;
+	}
 }
 
 
@@ -39,11 +39,11 @@ void neuron::mutate(int procent)
 {
 	srand(time(NULL));
 	if (rand() % 101 <= procent)
-		basevalue = (float)(rand() %( 10 *10) /*RANGE*/)/10;
+		basevalue = (float)(rand() %( 20 *10) /*RANGE*/)/10-10;
 	for (int i = 0; i < ratio.size(); i++)
 	{
 		if (rand() % 101 <= procent)
-			ratio[i] = (float)(rand() % (10 * 10) /*RANGE*/) / 10;
+			ratio[i] = (float)(rand() % (20 * 10) /*RANGE*/) / 10-10;
 	}
 }
 

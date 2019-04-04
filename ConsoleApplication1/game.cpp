@@ -47,6 +47,7 @@ game::game()
 	CzyOdpalone = 1;
 	SnakeDirection = right;
 	Points = 0;
+	pointforlife = 101;
 }
 
 
@@ -279,6 +280,10 @@ data game::GetData()
 				result.body[7] = float(11 - i) / 10;
 				break;
 			}
+		}
+		if (pointforlife > 0) {
+			Points=Points+3;
+			pointforlife-3;
 		}
 		//food
 		for (int i = 1; i <= 15; i++)
