@@ -1,11 +1,12 @@
 #ifndef GAME
 #define GAME
 #include <vector>
+#include <string>
 //
 //		  @ @ @
 //		   @@@
 //	@@@@@@@@O@@@@@@@@@@@@@@		//@-eye trace	O-head X-Body
-//		   @X@	
+//		   @X@
 //		  @ X @
 
 #pragma once

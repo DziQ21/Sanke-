@@ -10,12 +10,7 @@
 
 neuron::neuron()
 {
-	
-	basevalue = (float)(rand() % (10 * 10) /*RANGE*/) / 10;
-	for (int i = 0; i < ratio.size(); i++)
-	{
-			ratio[i] = (float)(rand() % (10 * 10) /*RANGE*/) / 10;
-	}
+
 }
 float neuron::getvalue(std::vector<float> values)
 {

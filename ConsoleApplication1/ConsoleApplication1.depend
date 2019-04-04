@@ -1,0 +1,54 @@
+# depslib dependency file v1.0
+1554394486 source:c:\users\pawel\desktop\nowy folder\snake\consoleapplication1\consoleapplication1.cpp
+	"pch.h"
+	<iostream>
+	<string>
+	"game.h"
+	<cstdlib>
+	<ctime>
+	<Windows.h>
+
+1554327033 c:\users\pawel\desktop\nowy folder\snake\consoleapplication1\pch.h
+
+1554394520 c:\users\pawel\desktop\nowy folder\snake\consoleapplication1\game.h
+	<vector>
+	<string>
+
+1554393719 source:c:\users\pawel\desktop\nowy folder\snake\consoleapplication1\brain.cpp
+	"pch.h"
+	"Brain.h"
+	"neuron.h"
+	"neuron.cpp"
+
+1554326357 c:\users\pawel\desktop\nowy folder\snake\consoleapplication1\brain.h
+	"game.h"
+	<vector>
+	"neuron.h"
+
+1554393532 c:\users\pawel\desktop\nowy folder\snake\consoleapplication1\neuron.h
+	<vector>
+
+1554394520 c:\users\pawel\desktop\nowy folder\snake\consoleapplication1\neuron.cpp
+	"pch.h"
+	"neuron.h"
+	<cstdlib>
+	<ctime>
+	<cmath>
+
+1554394520 source:c:\users\pawel\desktop\nowy folder\snake\consoleapplication1\neuron.cpp
+	"pch.h"
+	"neuron.h"
+	<cstdlib>
+	<ctime>
+	<cmath>
+
+1554395262 source:c:\users\pawel\desktop\nowy folder\snake\consoleapplication1\game.cpp
+	"pch.h"
+	"game.h"
+	<string>
+	<iostream>
+	<cstdlib>
+
+1551996607 source:c:\users\pawel\desktop\nowy folder\snake\consoleapplication1\pch.cpp
+	"pch.h"
+

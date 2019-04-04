@@ -2,6 +2,7 @@
 #include "game.h"
 #include <string>
 #include <iostream>
+#include <cstdlib>
 
 bool operator==(vector a,vector b)
 {
@@ -45,6 +46,7 @@ game::game()
 	SetFood();
 	CzyOdpalone = 1;
 	SnakeDirection = right;
+	Points = 0;
 }
 
 
@@ -74,7 +76,7 @@ void game::Play(int input)
 	else
 		GhostTail = Body[0];
 	switch (real) {
-		//ghost tail setting 
+		//ghost tail setting
 
 
 	case 1:
@@ -148,6 +150,7 @@ void game::Play(int input)
 		//food
 	if (Body[HeadPosition] == Food)
 	{
+		Points += 100;
 		Body.insert(Body.begin() + HeadPosition + 1, GhostTail);//co jak na ostatniej
 		SetFood();
 	}
@@ -191,7 +194,7 @@ data game::GetData()
 			{
 				result.body[0] = float(11 - i) / 10;
 				break;
-			}	
+			}
 		}
 		for (int i = 1; i <= 10; i++)
 		{
@@ -277,7 +280,7 @@ data game::GetData()
 				break;
 			}
 		}
-		//food 
+		//food
 		for (int i = 1; i <= 15; i++)
 		{
 			if (Body[HeadPosition].y + i > HEIGHT - 1)
@@ -397,10 +400,10 @@ void game::Play(Direction input)
 			real = SnakeDirection;
 		else
 			real = input;
-	
+
 
 	switch (real) {
-		//ghost tail setting 
+		//ghost tail setting
 		if (HeadPosition != Body.size() - 1)
 			GhostTail = Body[HeadPosition + 1];
 		else
@@ -498,7 +501,7 @@ std::string game::Display()
 	screen[Food.y][Food.x] = '@';
 	if(CzyOdpalone)
 		screen[Body[HeadPosition].y][Body[HeadPosition].x] = 'O';
-	
+
 
 
 	std::string bufer;

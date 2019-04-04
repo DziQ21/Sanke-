@@ -1,35 +1,87 @@
 ﻿// ConsoleApplication1.cpp : Ten plik zawiera funkcję „main”. W nim rozpoczyna się i kończy wykonywanie programu.
 //
 
+
 #include "pch.h"
 #include <iostream>
 #include <string>
 #include "game.h"
 #include <cstdlib>
 #include <ctime>
+#include "Brain.h"
 #include <Windows.h>
+#include <algorithm>
+
+#define MUTATIONTATIO 10
+#define SIZEOFPOPULATION 100
 
 int main()
 {
+	int generation=0;
+	int numberofmoves;
 	srand(time(NULL));
-	game giereczka;
-	while (true) {
-		int a;
-		std::cin>> a;
-		
-		system("CLS");
-		giereczka.Play(a);
-		std::cout << giereczka.Display();
+	//initializing
+	Brain population[SIZEOFPOPULATION];
+	game populationgames[SIZEOFPOPULATION];
+	Brain LastBest;
+	game gameofbest;
+	//first play;
+	numberofmoves = 20 + (generation % 5) * 10;
+	for (int i = 0; i < numberofmoves; i++)
+	{
+		for (int j = 0; j < SIZEOFPOPULATION; j++)
+			populationgames[j].Play(population[j].GetMove(populationgames[j].GetData()));
 	}
+	while (true) {
+		int pos;
+		int value=0;
+		for (int i = 0; i < SIZEOFPOPULATION; i++)
+		{
+			if (populationgames[i].GetPoints() >= value)
+			{
+				value = populationgames[i].GetPoints();
+				pos = i;
+			}
+		}
+		LastBest = population[pos];
+		gameofbest = game();
+		for (int i = 0; i < SIZEOFPOPULATION; i++) {
+			value = 0;
+			for (int j = i; j < SIZEOFPOPULATION; j++)
+			{
+				if (populationgames[j].GetPoints() >= value)
+				{
+					value = populationgames[j].GetPoints();
+					pos = i;
+				}
+			}
+			std::swap(population[i], population[pos]);
+			std::swap(populationgames[i], populationgames[pos]);
+		}
+		for (int i = 50; i < SIZEOFPOPULATION; i++)
+		{
+			population[i].evolve(MUTATIONTATIO);
+		}
+		for (int i = 0; i < SIZEOFPOPULATION; i++)
+		{
+			populationgames[i] = game();
+		}
+		numberofmoves = 30 + (++generation % 5) * 10;
+		for (int i = 0; i < numberofmoves; i++)
+		{
+			for (int j = 0; j < SIZEOFPOPULATION; j++)
+				populationgames[j].Play(population[j].GetMove(populationgames[j].GetData()));
+			gameofbest.Play(LastBest.GetMove(gameofbest.GetData()));
+			system("cls");
+			std::cout << "=====" << generation << "======\n\n" << gameofbest.Display();
+			Sleep(50);
+
+		}
+
+
+		Sleep (0);
+	}
+
+	return 0;
 }
 
-// Uruchomienie programu: Ctrl + F5 lub menu Debugowanie > Uruchom bez debugowania
-// Debugowanie programu: F5 lub menu Debugowanie > Rozpocznij debugowanie
-
-// Porady dotyczące rozpoczynania pracy:
-//   1. Użyj okna Eksploratora rozwiązań, aby dodać pliki i zarządzać nimi
-//   2. Użyj okna programu Team Explorer, aby nawiązać połączenie z kontrolą źródła
-//   3. Użyj okna Dane wyjściowe, aby sprawdzić dane wyjściowe kompilacji i inne komunikaty
-//   4. Użyj okna Lista błędów, aby zobaczyć błędy
-//   5. Wybierz pozycję Projekt > Dodaj nowy element, aby utworzyć nowe pliki kodu, lub wybierz pozycję Projekt > Dodaj istniejący element, aby dodać istniejące pliku kodu do projektu
-//   6. Aby w przyszłości ponownie otworzyć ten projekt, przejdź do pozycji Plik > Otwórz > Projekt i wybierz plik sln

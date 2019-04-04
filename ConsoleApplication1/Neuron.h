@@ -1,15 +1,14 @@
 #pragma once
 #ifndef NEURON
 #define NEURON
-#define RANGE 20;
 
 #include <vector>
 class neuron
 {
 	std::vector <float> ratio;
 	float basevalue;
-	float value;
 public:
+	float getvalue(std::vector <float> values);
 	neuron(int a);
 	void mutate(int procent);
 	neuron();
