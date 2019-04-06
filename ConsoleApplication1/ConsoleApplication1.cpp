@@ -12,8 +12,8 @@
 #include <Windows.h>
 #include <algorithm>
 
-#define MUTATIONTATIO 15
-#define SIZEOFPOPULATION 100
+#define MUTATIONTATIO 90
+#define SIZEOFPOPULATION 200
 
 int main()
 {
@@ -26,7 +26,7 @@ int main()
 	Brain LastBest;
 	game gameofbest;
 	//first play;
-	numberofmoves = 20 + (generation % 5) * 10;
+	numberofmoves = 40 + (generation / 10) * 3;
 	for (int i = 0; i < numberofmoves; i++)
 	{
 		for (int j = 0; j < SIZEOFPOPULATION; j++)
@@ -35,52 +35,53 @@ int main()
 	while (true) {
 		int pos;
 		int value=0;
-		for (int i = 0; i < SIZEOFPOPULATION; i++)
-		{
-			if (populationgames[i].GetPoints() >= value)
-			{
-				value = populationgames[i].GetPoints();
-				pos = i;
-			}
-		}
-		LastBest = population[pos];
-		gameofbest = game();
+		
 		for (int i = 0; i < SIZEOFPOPULATION; i++) {
 			value = 0;
-			for (int j = i; j < SIZEOFPOPULATION; j++)
+			for (int j = 0; j < SIZEOFPOPULATION-i-1; j++)
 			{
-				if (populationgames[j].GetPoints() >= value)
+				if (populationgames[j].GetPoints()< populationgames[j+1].GetPoints())
 				{
-					value = populationgames[j].GetPoints();
-					pos = i;
+					std::swap(population[j], population[j+1]);
+					std::swap(populationgames[j], populationgames[j+1]);
 				}
 			}
-			std::swap(population[i], population[pos]);
-			std::swap(populationgames[i], populationgames[pos]);
 		}
-		for (int i = 50; i < SIZEOFPOPULATION; i++)
+		LastBest = population[0];
+		gameofbest = game();
+		
+		for (int i = SIZEOFPOPULATION/2; i < SIZEOFPOPULATION; i++)
 		{
-			population[i] = population[99 - i];
+			population[i] = population[SIZEOFPOPULATION-1 - i];
 			population[i].evolve(MUTATIONTATIO);
+		}
+		for (int i = SIZEOFPOPULATION/4 ; i < SIZEOFPOPULATION/2; i++)
+		{
+			
+			population[i].evolve(MUTATIONTATIO/10);
 		}
 		for (int i = 0; i < SIZEOFPOPULATION; i++)
 		{
 			populationgames[i] = game();
 		}
-		numberofmoves = 30 + (++generation % 5) * 10;
+		numberofmoves = 40 + (++generation / 20) * 3;
 		for (int i = 0; i < numberofmoves; i++)
 		{
 			for (int j = 0; j < SIZEOFPOPULATION; j++)
-				populationgames[j].Play(population[j].GetMove(populationgames[j].GetData()));
+				if (populationgames[j].GetRuning())
+					populationgames[j].Play(population[j].GetMove(populationgames[j].GetData()));
+				else
+					Sleep(1);
+				
 			gameofbest.Play(LastBest.GetMove(gameofbest.GetData()));
 			system("cls");
 			std::cout << "=====" << generation << "======\n\n" << gameofbest.Display();
-			Sleep(50);
+			Sleep(5);
 
 		}
 
 
-		Sleep (0);
+		
 	}
 
 	return 0;

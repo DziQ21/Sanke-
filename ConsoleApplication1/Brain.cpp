@@ -54,9 +54,9 @@ int Brain::GetMove(data a)
 
 void Brain::evolve(int percent)
 {
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < 40; i++)
 		middle[0][i].mutate(percent);
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < 40; i++)
 		middle[1][i].mutate(percent);
 	for (int i = 0; i < 4; i++)
 		end[i].mutate(percent);
@@ -65,12 +65,12 @@ void Brain::evolve(int percent)
 Brain::Brain()
 {
 
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < 40; i++)
 		middle[0].push_back(neuron(20));
-	for (int i = 0; i < 20; i++)
-		middle[1].push_back(neuron(20));
+	for (int i = 0; i < 40; i++)
+		middle[1].push_back(neuron(40));
 	for (int i = 0; i < 4; i++)
-		end.push_back(neuron(20));
+		end.push_back(neuron(40));
 }
 
 

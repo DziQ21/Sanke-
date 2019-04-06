@@ -43,11 +43,12 @@ game::game()
 	bufor.x++;
 	Body.push_back(bufor);
 	HeadPosition = 0;
-	SetFood();
+	Food.x= WIDTH / 2+4;
+	Food.y = HEIGHT / 2-4;
 	CzyOdpalone = 1;
 	SnakeDirection = right;
 	Points = 0;
-	pointforlife = 101;
+	pointforlife = 00;
 }
 
 
@@ -140,8 +141,9 @@ void game::Play(int input)
 			HeadPosition = 0;
 		}
 		break;
-
+		
 	};
+
 	//colision
 	if (Body[HeadPosition].x < 0 || Body[HeadPosition].y < 0 || Body[HeadPosition].x > WIDTH-1 || Body[HeadPosition].y > HEIGHT-1)
 		CzyOdpalone = 0;
@@ -149,9 +151,13 @@ void game::Play(int input)
 		if (Body[HeadPosition].x == Body[i].x&&Body[HeadPosition].y == Body[i].y&&i != HeadPosition)
 			CzyOdpalone = 0;
 		//food
+	if (pointforlife > 0) {
+		Points = Points + 5;
+		pointforlife -= 5;
+	}
 	if (Body[HeadPosition] == Food)
 	{
-		Points += 100;
+		 pointforlife+= 100;
 		Body.insert(Body.begin() + HeadPosition + 1, GhostTail);//co jak na ostatniej
 		SetFood();
 	}
@@ -281,10 +287,7 @@ data game::GetData()
 				break;
 			}
 		}
-		if (pointforlife > 0) {
-			Points=Points+3;
-			pointforlife-3;
-		}
+		
 		//food
 		for (int i = 1; i <= 15; i++)
 		{
@@ -294,7 +297,7 @@ data game::GetData()
 			}
 			if (screen[Body[HeadPosition].x][Body[HeadPosition].y + i] == '@')
 			{
-				result.food[0] = float(16 - i) / 15;
+				result.food[0] = 1;// float(16 - i) / 15*2;
 				break;
 			}
 		}
@@ -306,7 +309,7 @@ data game::GetData()
 			}
 			if (screen[Body[HeadPosition].x + i][Body[HeadPosition].y + i] == '@')
 			{
-				result.food[1] = float(16 - i) / 15;
+				result.food[1] = 1;// float(16 - i) / 15*2;
 				break;
 			}
 		}
@@ -318,7 +321,7 @@ data game::GetData()
 			}
 			if (screen[Body[HeadPosition].x + i][Body[HeadPosition].y] == '@')
 			{
-				result.food[2] = float(16 - i) / 15;
+				result.food[2] = 1;// float(16 - i) / 15*2;
 				break;
 			}
 		}
@@ -330,7 +333,7 @@ data game::GetData()
 			}
 			if (screen[Body[HeadPosition].x + i][Body[HeadPosition].y - i] == '@')
 			{
-				result.food[3] = float(16 - i) / 15;
+				result.food[3] = 1;// float(16 - i) / 15*2;
 				break;
 			}
 		}
@@ -342,7 +345,7 @@ data game::GetData()
 			}
 			if (screen[Body[HeadPosition].x][Body[HeadPosition].y - i] == '@')
 			{
-				result.food[4] = float(16 - i) / 15;
+				result.food[4] = 1;//float(16 - i) / 15*2;
 				break;
 			}
 		}
@@ -354,7 +357,7 @@ data game::GetData()
 			}
 			if (screen[Body[HeadPosition].x - i][Body[HeadPosition].y - i] == '@')
 			{
-				result.food[5] = float(16 - i) / 16;
+				result.food[5] = 1;// float(16 - i) / 16*2;
 				break;
 			}
 		}
@@ -366,7 +369,7 @@ data game::GetData()
 			}
 			if (screen[Body[HeadPosition].x - i][Body[HeadPosition].y] == '@')
 			{
-				result.food[6] = float(16 - i) / 15;
+				result.food[6] = 1;//float(16 - i) / 15*2;
 				break;
 			}
 		}
@@ -378,7 +381,7 @@ data game::GetData()
 			}
 			if (screen[Body[HeadPosition].x - 1][Body[HeadPosition].y + i] == '@')
 			{
-				result.food[7] = float(16 - i) / 15;
+				result.food[7] = 1;//float(16 - i) / 15*2;
 				break;
 			}
 		}
