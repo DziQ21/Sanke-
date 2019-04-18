@@ -12,29 +12,56 @@
 #include <Windows.h>
 #include <algorithm>
 
-#define MUTATIONTATIO 90
-#define SIZEOFPOPULATION 200
+#define MUTATIONTATIO 30
+#define SIZEOFPOPULATION 120
 
 int main()
 {
 	int generation=0;
-	int numberofmoves;
-	srand(time(NULL));
+	
+	
 	//initializing
 	Brain population[SIZEOFPOPULATION];
 	game populationgames[SIZEOFPOPULATION];
-	Brain LastBest;
-	game gameofbest;
-	//first play;
-	numberofmoves = 40 + (generation / 10) * 3;
-	for (int i = 0; i < numberofmoves; i++)
-	{
-		for (int j = 0; j < SIZEOFPOPULATION; j++)
-			populationgames[j].Play(population[j].GetMove(populationgames[j].GetData()));
-	}
+	
+	
+	
 	while (true) {
-		int pos;
+
+		int tracked=0;
+		
 		int value=0;
+		
+		
+		while(1)
+		{
+			if (!populationgames[tracked].GetRuning())
+			{
+				bool runningfound=0;
+				for(int j = 0; j < SIZEOFPOPULATION; j++)
+					if (populationgames[j].GetRuning())
+					{
+						tracked = j;
+						runningfound = 1;
+						break;
+					}
+				if (runningfound == 0)
+					break;
+			}
+			for (int j = 0; j < SIZEOFPOPULATION; j++)
+				if (populationgames[j].GetRuning())
+					populationgames[j].Play(population[j].GetMove(populationgames[j].GetData()));
+				else 
+					Sleep(1);
+				
+			//populationgames[tracked].Play(population[0].GetMove(populationgames[tracked].GetData()));
+			system("cls");
+			std::cout << "=====" << generation << "======\nosobnik:"<<tracked<<"\n" << populationgames[tracked].Display()<<populationgames[tracked].GetMoves() ;
+			Sleep(5);
+
+		}
+
+		generation++;
 		
 		for (int i = 0; i < SIZEOFPOPULATION; i++) {
 			value = 0;
@@ -47,9 +74,8 @@ int main()
 				}
 			}
 		}
-		LastBest = population[0];
-		gameofbest = game();
-		
+		std::cout << "test" << populationgames[0].GetPoints()<<"  "<< populationgames[SIZEOFPOPULATION-1].GetPoints();
+		Sleep(2000);
 		for (int i = SIZEOFPOPULATION/2; i < SIZEOFPOPULATION; i++)
 		{
 			population[i] = population[SIZEOFPOPULATION-1 - i];
@@ -64,24 +90,6 @@ int main()
 		{
 			populationgames[i] = game();
 		}
-		numberofmoves = 40 + (++generation / 20) * 3;
-		for (int i = 0; i < numberofmoves; i++)
-		{
-			for (int j = 0; j < SIZEOFPOPULATION; j++)
-				if (populationgames[j].GetRuning())
-					populationgames[j].Play(population[j].GetMove(populationgames[j].GetData()));
-				else
-					Sleep(1);
-				
-			gameofbest.Play(LastBest.GetMove(gameofbest.GetData()));
-			system("cls");
-			std::cout << "=====" << generation << "======\n\n" << gameofbest.Display();
-			Sleep(5);
-
-		}
-
-
-		
 	}
 
 	return 0;

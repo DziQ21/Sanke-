@@ -4,6 +4,14 @@
 #include <iostream>
 #include <cstdlib>
 
+vector operator+(vector a, vector b)
+{
+	vector result;
+	result.x = a.x + b.x;
+	result.y = a.y + b.y;
+	return result;
+}
+
 bool operator==(vector a,vector b)
 {
 	if (a.x == b.x&&a.y == b.y)
@@ -13,11 +21,12 @@ bool operator==(vector a,vector b)
 
 void game::SetFood()
 {
+	
 	while (true)
 	{
 		bool isGood=1;
-		Food.x = rand() % WIDTH;
-		Food.y = rand() % HEIGHT;
+		Food.x = rand() % (WIDTH-4)+2;
+		Food.y = rand() % (HEIGHT-4)+2;
 		for(int i=0;i<Body.size();i++)
 			if (Food == Body[i])
 			{
@@ -32,6 +41,7 @@ void game::SetFood()
 
 game::game()
 {
+	moves = 100;
 	vector bufor;
 	bufor.x = WIDTH/2;
 	bufor.y = HEIGHT/2;
@@ -43,18 +53,18 @@ game::game()
 	bufor.x++;
 	Body.push_back(bufor);
 	HeadPosition = 0;
-	Food.x= WIDTH / 2+4;
-	Food.y = HEIGHT / 2-4;
+	SetFood();
 	CzyOdpalone = 1;
 	SnakeDirection = right;
 	Points = 0;
-	pointforlife = 00;
 }
 
 
 game::~game()
 {
 }
+
+
 
 void game::Play(int input)
 {
@@ -64,7 +74,6 @@ void game::Play(int input)
 		return;
 	}
 	int real;
-
 	if ((input == 0 || input == 2) && (SnakeDirection == 0 || SnakeDirection == 2))
 		real = static_cast<Direction>(SnakeDirection);
 	else
@@ -80,7 +89,7 @@ void game::Play(int input)
 	switch (real) {
 		//ghost tail setting
 
-
+		
 	case 1:
 		SnakeDirection = right;
 		if (HeadPosition != Body.size() - 1)
@@ -150,18 +159,19 @@ void game::Play(int input)
 	for (int i = 0; i < Body.size(); i++)
 		if (Body[HeadPosition].x == Body[i].x&&Body[HeadPosition].y == Body[i].y&&i != HeadPosition)
 			CzyOdpalone = 0;
+	if(moves<0)
+		CzyOdpalone = 0;
 		//food
-	if (pointforlife > 0) {
-		Points = Points + 5;
-		pointforlife -= 5;
-	}
+	
 	if (Body[HeadPosition] == Food)
 	{
-		 pointforlife+= 100;
+		 Points+= 100;
+		 moves += 50;
 		Body.insert(Body.begin() + HeadPosition + 1, GhostTail);//co jak na ostatniej
 		SetFood();
 	}
-
+	moves--;
+	
 
 }
 
@@ -173,8 +183,8 @@ data game::GetData()
 		result.food[i] = 0;
 		result.body[i] = 0;
 	}
-
-	if(CzyOdpalone)
+	
+	if (CzyOdpalone)
 	{
 		char screen[WIDTH][HEIGHT];
 		for (int i = 0; i < HEIGHT; i++)
@@ -186,207 +196,282 @@ data game::GetData()
 
 		screen[Food.y][Food.x] = '@';
 		screen[Body[HeadPosition].y][Body[HeadPosition].x] = 'O';
-		result.wall[0] = (float)Body[HeadPosition].y / HEIGHT;
-		result.wall[1] = (float)Body[HeadPosition].x / WIDTH;
-		result.wall[2] = (float)(HEIGHT - Body[HeadPosition].y) / HEIGHT;
-		result.wall[3] = (float)(WIDTH - Body[HeadPosition].x) / WIDTH;
-		//body
-		for (int i = 1; i <= 10; i++)
+		int i=0;
 		{
-			if (Body[HeadPosition].y + i > HEIGHT - 1)
-			{
-				break;
+			vector direction = { 0,1 };
+			vector position = vector{ Body[HeadPosition].x, Body[HeadPosition].y };//the position where we are currently looking for food or tail or wall
+			bool foodIsFound = false;//true if the food has been located in the direction looked
+			bool tailIsFound = false;//true if the tail has been located in the direction looked 
+			float distance = 0;
+			//move once in the desired direction before starting 
+			position = position + direction;
+			distance += 1;
+
+			//look in the direction until you reach a wall
+			while (!(position.x < 0 || position.y < 0 || position.x > WIDTH || position.y > HEIGHT)) {
+
+				//check for food at the position
+				if (!foodIsFound && position.x == Food.x && position.y == Food.y) {
+					result.food[i] = 1;
+					foodIsFound = true; // dont check if food is already found
+				}
+
+				//check for tail at the position
+				if (!tailIsFound && screen[position.x][position.y] == 'X') {
+					result.body[i] / distance;
+					tailIsFound = true; // dont check if tail is already found
+				}
+
+				//look further in the direction
+				position = position + direction;
+				distance += 1;
 			}
-			if (screen[Body[HeadPosition].x][Body[HeadPosition].y+i]=='X')
-			{
-				result.body[0] = float(11 - i) / 10;
-				break;
-			}
+			//set the distance to the wall
+			result.wall[i] = 1 / distance;
+			i++;
+
 		}
-		for (int i = 1; i <= 10; i++)
 		{
-			if ((Body[HeadPosition].y + i > HEIGHT - 1)|| (Body[HeadPosition].x + i > WIDTH - 1))
-			{
-				break;
+			vector direction = { 1,1 };
+			vector position = vector{ Body[HeadPosition].x, Body[HeadPosition].y };//the position where we are currently looking for food or tail or wall
+			bool foodIsFound = false;//true if the food has been located in the direction looked
+			bool tailIsFound = false;//true if the tail has been located in the direction looked 
+			float distance = 0;
+			//move once in the desired direction before starting 
+			position = position + direction;
+			distance += 1;
+
+			//look in the direction until you reach a wall
+			while (!(position.x < 0 || position.y < 0 || position.x > WIDTH || position.y > HEIGHT)) {
+
+				//check for food at the position
+				if (!foodIsFound && position.x == Food.x && position.y == Food.y) {
+					result.food[i] = 1;
+					foodIsFound = true; // dont check if food is already found
+				}
+
+				//check for tail at the position
+				if (!tailIsFound && screen[position.x][position.y] == 'X') {
+					result.body[i] / distance;
+					tailIsFound = true; // dont check if tail is already found
+				}
+
+				//look further in the direction
+				position = position + direction;
+				distance += 1;
 			}
-			if (screen[Body[HeadPosition].x+i][Body[HeadPosition].y + i] == 'X')
-			{
-				result.body[1] = float(11 - i) / 10;
-				break;
-			}
-		}
-		for (int i = 1; i <= 10; i++)
-		{
-			if (Body[HeadPosition].x + i > WIDTH - 1)
-			{
-				break;
-			}
-			if (screen[Body[HeadPosition].x+i][Body[HeadPosition].y] == 'X')
-			{
-				result.body[2] = float(11 - i) / 10;
-				break;
-			}
-		}
-		for (int i = 1; i <= 10; i++)
-		{
-			if ((Body[HeadPosition].x + i > WIDTH - 1)|| (Body[HeadPosition].y - i < 0))
-			{
-				break;
-			}
-			if (screen[Body[HeadPosition].x + i][Body[HeadPosition].y-i] == 'X')
-			{
-				result.body[3] = float(11 - i) / 10;
-				break;
-			}
-		}
-		for (int i = 1; i <= 10; i++)
-		{
-			if (Body[HeadPosition].y - i < 0)
-			{
-				break;
-			}
-			if (screen[Body[HeadPosition].x][Body[HeadPosition].y - i] == 'X')
-			{
-				result.body[4] = float(11 - i) / 10;
-				break;
-			}
-		}
-		for (int i = 1; i <= 10; i++)
-		{
-			if ((Body[HeadPosition].y - i < 0)||(Body[HeadPosition].x - i < 0))
-			{
-				break;
-			}
-			if (screen[Body[HeadPosition].x-i][Body[HeadPosition].y - i] == 'X')
-			{
-				result.body[5] = float(11 - i) / 10;
-				break;
-			}
-		}
-		for (int i = 1; i <= 10; i++)
-		{
-			if (Body[HeadPosition].x - i < 0)
-			{
-				break;
-			}
-			if (screen[Body[HeadPosition].x-i][Body[HeadPosition].y] == 'X')
-			{
-				result.body[6] = float(11 - i) / 10;
-				break;
-			}
-		}
-		for (int i = 1; i <= 10; i++)
-		{
-			if ((Body[HeadPosition].y + i > HEIGHT - 1)||(Body[HeadPosition].x - i < 0))
-			{
-				break;
-			}
-			if (screen[Body[HeadPosition].x-1][Body[HeadPosition].y + i] == 'X')
-			{
-				result.body[7] = float(11 - i) / 10;
-				break;
-			}
-		}
-		
-		//food
-		for (int i = 1; i <= 15; i++)
-		{
-			if (Body[HeadPosition].y + i > HEIGHT - 1)
-			{
-				break;
-			}
-			if (screen[Body[HeadPosition].x][Body[HeadPosition].y + i] == '@')
-			{
-				result.food[0] = 1;// float(16 - i) / 15*2;
-				break;
-			}
-		}
-		for (int i = 1; i <= 15; i++)
-		{
-			if ((Body[HeadPosition].y + i > HEIGHT - 1) || (Body[HeadPosition].x + i > WIDTH - 1))
-			{
-				break;
-			}
-			if (screen[Body[HeadPosition].x + i][Body[HeadPosition].y + i] == '@')
-			{
-				result.food[1] = 1;// float(16 - i) / 15*2;
-				break;
-			}
-		}
-		for (int i = 1; i <= 15; i++)
-		{
-			if (Body[HeadPosition].x + i > WIDTH - 1)
-			{
-				break;
-			}
-			if (screen[Body[HeadPosition].x + i][Body[HeadPosition].y] == '@')
-			{
-				result.food[2] = 1;// float(16 - i) / 15*2;
-				break;
-			}
-		}
-		for (int i = 1; i <= 15; i++)
-		{
-			if ((Body[HeadPosition].x + i > WIDTH - 1) || (Body[HeadPosition].y - i < 0))
-			{
-				break;
-			}
-			if (screen[Body[HeadPosition].x + i][Body[HeadPosition].y - i] == '@')
-			{
-				result.food[3] = 1;// float(16 - i) / 15*2;
-				break;
-			}
-		}
-		for (int i = 1; i <= 15; i++)
-		{
-			if (Body[HeadPosition].y - i < 0)
-			{
-				break;
-			}
-			if (screen[Body[HeadPosition].x][Body[HeadPosition].y - i] == '@')
-			{
-				result.food[4] = 1;//float(16 - i) / 15*2;
-				break;
-			}
-		}
-		for (int i = 1; i <= 15; i++)
-		{
-			if ((Body[HeadPosition].y - i < 0) || (Body[HeadPosition].x - i < 0))
-			{
-				break;
-			}
-			if (screen[Body[HeadPosition].x - i][Body[HeadPosition].y - i] == '@')
-			{
-				result.food[5] = 1;// float(16 - i) / 16*2;
-				break;
-			}
-		}
-		for (int i = 1; i <= 15; i++)
-		{
-			if (Body[HeadPosition].x - i < 0)
-			{
-				break;
-			}
-			if (screen[Body[HeadPosition].x - i][Body[HeadPosition].y] == '@')
-			{
-				result.food[6] = 1;//float(16 - i) / 15*2;
-				break;
-			}
-		}
-		for (int i = 1; i <= 15; i++)
-		{
-			if ((Body[HeadPosition].y + i > HEIGHT - 1) || (Body[HeadPosition].x - i < 0))
-			{
-				break;
-			}
-			if (screen[Body[HeadPosition].x - 1][Body[HeadPosition].y + i] == '@')
-			{
-				result.food[7] = 1;//float(16 - i) / 15*2;
-				break;
-			}
+
+			//set the distance to the wall
+			result.wall[i] = 1 / distance;
+
+			i++;
+
 		}
 
+		{
+			vector direction = { 1,0 };
+			vector position = vector{ Body[HeadPosition].x, Body[HeadPosition].y };//the position where we are currently looking for food or tail or wall
+			bool foodIsFound = false;//true if the food has been located in the direction looked
+			bool tailIsFound = false;//true if the tail has been located in the direction looked 
+			float distance = 0;
+			//move once in the desired direction before starting 
+			position = position + direction;
+			distance += 1;
 
+			//look in the direction until you reach a wall
+			while (!(position.x < 0 || position.y < 0 || position.x > WIDTH || position.y > HEIGHT)) {
+
+				//check for food at the position
+				if (!foodIsFound && position.x == Food.x && position.y == Food.y) {
+					result.food[i] = 1;
+					foodIsFound = true; // dont check if food is already found
+				}
+
+				//check for tail at the position
+				if (!tailIsFound && screen[position.x][position.y] == 'X') {
+					result.body[i] / distance;
+					tailIsFound = true; // dont check if tail is already found
+				}
+
+				//look further in the direction
+				position = position + direction;
+				distance += 1;
+			}
+
+			//set the distance to the wall
+			result.wall[i] = 1 / distance;
+			i++;
+		}
+		{
+			vector direction = { 1,-1 };
+			vector position = vector{ Body[HeadPosition].x, Body[HeadPosition].y };//the position where we are currently looking for food or tail or wall
+			bool foodIsFound = false;//true if the food has been located in the direction looked
+			bool tailIsFound = false;//true if the tail has been located in the direction looked 
+			float distance = 0;
+			//move once in the desired direction before starting 
+			position = position + direction;
+			distance += 1;
+
+			//look in the direction until you reach a wall
+			while (!(position.x < 0 || position.y < 0 || position.x > WIDTH || position.y > HEIGHT)) {
+
+				//check for food at the position
+				if (!foodIsFound && position.x == Food.x && position.y == Food.y) {
+					result.food[i] = 1;
+					foodIsFound = true; // dont check if food is already found
+				}
+
+				//check for tail at the position
+				if (!tailIsFound && screen[position.x][position.y] == 'X') {
+					result.body[i] / distance;
+					tailIsFound = true; // dont check if tail is already found
+				}
+
+				//look further in the direction
+				position = position + direction;
+				distance += 1;
+			}
+
+			//set the distance to the wall
+			result.wall[i] = 1 / distance;
+			i++;
+		}
+		{
+			vector direction = { 0,-1 };
+			vector position = vector{ Body[HeadPosition].x, Body[HeadPosition].y };//the position where we are currently looking for food or tail or wall
+			bool foodIsFound = false;//true if the food has been located in the direction looked
+			bool tailIsFound = false;//true if the tail has been located in the direction looked 
+			float distance = 0;
+			//move once in the desired direction before starting 
+			position = position + direction;
+			distance += 1;
+
+			//look in the direction until you reach a wall
+			while (!(position.x < 0 || position.y < 0 || position.x > WIDTH || position.y > HEIGHT)) {
+
+				//check for food at the position
+				if (!foodIsFound && position.x == Food.x && position.y == Food.y) {
+					result.food[i] = 1;
+					foodIsFound = true; // dont check if food is already found
+				}
+
+				//check for tail at the position
+				if (!tailIsFound && screen[position.x][position.y] == 'X') {
+					result.body[i] / distance;
+					tailIsFound = true; // dont check if tail is already found
+				}
+
+				//look further in the direction
+				position = position + direction;
+				distance += 1;
+			}
+
+			//set the distance to the wall
+			result.wall[i] = 1 / distance;
+			i++;
+		}
+		{
+			vector direction = { -1,-1 };
+			vector position = vector{ Body[HeadPosition].x, Body[HeadPosition].y };//the position where we are currently looking for food or tail or wall
+			bool foodIsFound = false;//true if the food has been located in the direction looked
+			bool tailIsFound = false;//true if the tail has been located in the direction looked 
+			float distance = 0;
+			//move once in the desired direction before starting 
+			position = position + direction;
+			distance += 1;
+
+			//look in the direction until you reach a wall
+			while (!(position.x < 0 || position.y < 0 || position.x > WIDTH || position.y > HEIGHT)) {
+
+				//check for food at the position
+				if (!foodIsFound && position.x == Food.x && position.y == Food.y) {
+					result.food[i] = 1;
+					foodIsFound = true; // dont check if food is already found
+				}
+
+				//check for tail at the position
+				if (!tailIsFound && screen[position.x][position.y] == 'X') {
+					result.body[i] / distance;
+					tailIsFound = true; // dont check if tail is already found
+				}
+
+				//look further in the direction
+				position = position + direction;
+				distance += 1;
+			}
+
+			//set the distance to the wall
+			result.wall[i] = 1 / distance;
+			i++;
+		}
+		{
+			vector direction = { -1,0 };
+			vector position = vector{ Body[HeadPosition].x, Body[HeadPosition].y };//the position where we are currently looking for food or tail or wall
+			bool foodIsFound = false;//true if the food has been located in the direction looked
+			bool tailIsFound = false;//true if the tail has been located in the direction looked 
+			float distance = 0;
+			//move once in the desired direction before starting 
+			position = position + direction;
+			distance += 1;
+
+			//look in the direction until you reach a wall
+			while (!(position.x < 0 || position.y < 0 || position.x > WIDTH || position.y > HEIGHT)) {
+
+				//check for food at the position
+				if (!foodIsFound && position.x == Food.x && position.y == Food.y) {
+					result.food[i] = 1;
+					foodIsFound = true; // dont check if food is already found
+				}
+
+				//check for tail at the position
+				if (!tailIsFound && screen[position.x][position.y] == 'X') {
+					result.body[i] / distance;
+					tailIsFound = true; // dont check if tail is already found
+				}
+
+				//look further in the direction
+				position = position + direction;
+				distance += 1;
+			}
+
+			//set the distance to the wall
+			result.wall[i] = 1 / distance;
+			i++;
+		}
+		{
+			vector direction = { -1,1 };
+			vector position = vector{ Body[HeadPosition].x, Body[HeadPosition].y };//the position where we are currently looking for food or tail or wall
+			bool foodIsFound = false;//true if the food has been located in the direction looked
+			bool tailIsFound = false;//true if the tail has been located in the direction looked 
+			float distance = 0;
+			//move once in the desired direction before starting 
+			position = position + direction;
+			distance += 1;
+
+			//look in the direction until you reach a wall
+			while (!(position.x < 0 || position.y < 0 || position.x > WIDTH || position.y > HEIGHT)) {
+
+				//check for food at the position
+				if (!foodIsFound && position.x == Food.x && position.y == Food.y) {
+					result.food[i] = 1;
+					foodIsFound = true; // dont check if food is already found
+				}
+
+				//check for tail at the position
+				if (!tailIsFound && screen[position.x][position.y] == 'X') {
+					result.body[i] / distance;
+					tailIsFound = true; // dont check if tail is already found
+				}
+
+				//look further in the direction
+				position = position + direction;
+				distance += 1;
+			}
+
+			//set the distance to the wall
+			result.wall[i] = 1 / distance;
+			i++; 
+		}
 	}
 
 

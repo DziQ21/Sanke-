@@ -15,7 +15,7 @@
 
 enum Direction{up=0 ,right ,down,left};//to make job easier
 struct data {//type that represents what snake see
-	float wall[4];
+	float wall[8];
 	float food[8];
 	float body[8];
 };
@@ -28,6 +28,7 @@ struct vector {
 class game
 {
 private:
+	int moves;
 	vector Food;
 	int Points;
 	std::vector <vector> Body;
@@ -35,7 +36,7 @@ private:
 	vector GhostTail;
 	Direction SnakeDirection;
 	bool CzyOdpalone;//to fix ;
-	int pointforlife;
+	
 	//priv func
 	void SetFood();
 public:
@@ -46,6 +47,7 @@ public:
 	void Play(Direction input);
 	std::string Display();
 	//geting func
+	int GetMoves() { return moves; }
 	int GetPoints() { return Points; }
 	bool GetRuning() { return CzyOdpalone; }
 };
