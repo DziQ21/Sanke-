@@ -30,7 +30,7 @@ int Brain::GetMove(data a)
 	}
 	std::vector <float> bufer;
 	bufer = getvalues(middle[0],prepareddata);
-	bufer = getvalues(middle[0], bufer);
+	bufer = getvalues(middle[1], bufer);
 	bufer = getvalues(end, bufer);
 	int pos1;
 	int pos2;
